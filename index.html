@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mayari — PDF Quote Extraction for Academic Research</title>
+  <meta name="description" content="A moonlit companion for academic research. Extract quotes from PDFs with automatic citation tracking, listen with high-quality text-to-speech, and export to Markdown.">
+  <meta property="og:title" content="Mayari — PDF Quote Extraction for Academic Research">
+  <meta property="og:description" content="Extract quotes from PDFs with automatic citation tracking, listen with high-quality TTS, and export to Markdown. Cross-platform desktop app for researchers.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://boltzmannentropy.github.io/mayari-web/images/mayari-reader-2026-02-20-web.png">
+  <meta name="twitter:image" content="https://boltzmannentropy.github.io/mayari-web/images/mayari-reader-2026-02-20-web.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #ffffff;
+      --bg-subtle: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f8fafc;
+      --border: #e5e7eb;
+      --border-hover: #d1d5db;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --text-dim: #94a3b8;
+      --accent: #7c3aed;
+      --accent-dark: #6d28d9;
+      --accent-mid: #8b5cf6;
+      --accent-soft: #f5f3ff;
+      --accent-glow: rgba(124, 58, 237, 0.15);
+      --glow: rgba(124, 58, 237, 0.06);
+      --glow-soft: rgba(124, 58, 237, 0.03);
+      --surface-light: #faf5ff;
+      --surface-warm: #f3e8ff;
+      --surface-border: #e9d5ff;
+      --text-dark: #0f172a;
+      --text-dark-muted: #64748b;
+      --radius: 16px;
+      --radius-lg: 24px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ===== Nav ===== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 14px 0;
+      transition: all 0.3s;
+      border-bottom: 1px solid transparent;
+    }
+
+    nav.scrolled {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom-color: var(--border);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 20px;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 100px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .nav-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 24px rgba(124, 58, 237, 0.25);
+    }
+
+    .mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      position: relative;
+      padding: 150px 0 80px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .hero .container {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+      gap: 48px;
+      align-items: center;
+    }
+
+    .hero-content {
+      text-align: left;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 900px;
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.08) 0%, rgba(139, 92, 246, 0.04) 40%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120%;
+      height: 400px;
+      background:
+        repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(124, 58, 237, 0.025) 8px, rgba(124, 58, 237, 0.025) 9px);
+      pointer-events: none;
+      mask-image: radial-gradient(ellipse 50% 100% at 50% 50%, black 0%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse 50% 100% at 50% 50%, black 0%, transparent 70%);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px 6px 8px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .hero-badge .chip {
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .hero h1 {
+      font-size: clamp(42px, 6.5vw, 76px);
+      font-weight: 900;
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+      color: var(--text);
+      margin-bottom: 24px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-content h1 {
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    .hero h1 .grad {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 60%, #4c1d95 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 19px);
+      color: var(--text-muted);
+      max-width: 620px;
+      margin: 0 auto 44px;
+      line-height: 1.65;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-content .hero-sub {
+      margin: 0 0 44px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-content .hero-buttons {
+      justify-content: flex-start;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 30px;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(124, 58, 237, 0.25);
+    }
+
+    .btn-primary svg { width: 18px; height: 18px; }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 30px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 15px;
+      font-weight: 500;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-ghost:hover {
+      color: var(--text);
+      border-color: var(--border-hover);
+      transform: translateY(-1px);
+    }
+
+    .hero-meta {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-top: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-meta .sep { margin: 0 8px; opacity: 0.4; }
+
+    /* ===== Hero Illustration ===== */
+    .hero-illustration {
+      position: relative;
+      max-width: 100%;
+      margin: 0;
+      padding: 48px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, var(--bg-subtle) 0%, var(--bg) 100%);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.02),
+        0 24px 80px rgba(0, 0, 0, 0.08),
+        0 0 60px rgba(124, 58, 237, 0.06);
+      z-index: 1;
+    }
+
+    .arch-diagram {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+      text-align: center;
+    }
+
+    .arch-box {
+      padding: 24px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .arch-box:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    }
+
+    .arch-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 12px;
+      background: var(--accent-soft);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .arch-icon svg {
+      width: 24px;
+      height: 24px;
+      color: var(--accent);
+    }
+
+    .arch-box h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .arch-box p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .arch-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 0;
+    }
+
+    .arch-arrow svg {
+      width: 32px;
+      height: 32px;
+      color: var(--accent);
+    }
+
+    /* ===== Tech Carousel ===== */
+    .tech-carousel {
+      padding: 64px 0 0;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .tech-carousel p {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      margin-bottom: 32px;
+    }
+
+    .carousel-wrapper {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .carousel-wrapper::before,
+    .carousel-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 120px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .carousel-wrapper::before {
+      left: 0;
+      background: linear-gradient(to right, var(--bg) 0%, transparent 100%);
+    }
+
+    .carousel-wrapper::after {
+      right: 0;
+      background: linear-gradient(to left, var(--bg) 0%, transparent 100%);
+    }
+
+    .carousel-track {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      width: max-content;
+      animation: carousel-scroll 40s linear infinite;
+    }
+
+    .carousel-track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes carousel-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .carousel-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      min-width: 90px;
+    }
+
+    .carousel-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .carousel-icon:hover {
+      transform: scale(1.08);
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
+    }
+
+    .carousel-icon svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .carousel-icon.accent-bg { background: var(--accent); }
+    .carousel-icon.warm-bg { background: #f59e0b; }
+    .carousel-icon.green-bg { background: #10b981; }
+    .carousel-icon.rose-bg { background: #f43f5e; }
+    .carousel-icon.sky-bg { background: #0ea5e9; }
+    .carousel-icon.purple-bg { background: #8b5cf6; }
+    .carousel-icon.teal-bg { background: #14b8a6; }
+    .carousel-icon.orange-bg { background: #f97316; }
+    .carousel-icon.indigo-bg { background: #6366f1; }
+
+    .carousel-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* ===== Sections ===== */
+    .section { padding: 120px 0; }
+    .section-dark { background: var(--bg); color: var(--text); }
+    .section-darker { background: var(--bg-subtle); color: var(--text); }
+    .section-light { background: var(--surface-light); color: var(--text); }
+    .section-warm { background: var(--surface-warm); color: var(--text); }
+
+    .section-header {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto 64px;
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+
+    .label-gradient {
+      color: var(--accent);
+    }
+
+    .section-header h2 {
+      font-size: clamp(28px, 4vw, 46px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .section-header p {
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+
+    /* ===== Feature Cards ===== */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .feature-card {
+      padding: 28px 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-mid), var(--accent));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-hover);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.06);
+    }
+
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-emoji {
+      font-size: 32px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .feature-card .feature-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .feature-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .feature-tag {
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+
+    .feature-tag.highlight {
+      border-color: var(--accent-mid);
+      color: var(--accent-dark);
+      background: var(--accent-soft);
+    }
+
+    /* ===== Feature Showcase ===== */
+    .showcase {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .showcase.reversed { direction: rtl; }
+    .showcase.reversed > * { direction: ltr; }
+
+    .showcase-text h3 {
+      font-size: clamp(22px, 3vw, 32px);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .showcase-text p {
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      color: var(--text-muted);
+    }
+
+    .showcase-bullets {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      list-style: none;
+    }
+
+    .showcase-bullets li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .showcase-bullets .bullet-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+      background: var(--accent-soft);
+    }
+
+    .showcase-bullets .bullet-icon svg {
+      width: 12px;
+      height: 12px;
+      color: var(--accent);
+    }
+
+    .showcase-visual {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      padding: 32px;
+      transition: transform 0.4s;
+    }
+
+    .showcase-visual:hover { transform: scale(1.02); }
+
+    .code-block {
+      background: var(--text);
+      border-radius: 12px;
+      padding: 20px;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+      font-size: 13px;
+      color: #e2e8f0;
+      overflow-x: auto;
+    }
+
+    .code-block .comment { color: #64748b; }
+    .code-block .keyword { color: #c4b5fd; }
+    .code-block .string { color: #34d399; }
+    .code-block .number { color: #fbbf24; }
+    .code-block .function { color: #a78bfa; }
+
+    /* ===== Stats Row ===== */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: 80px;
+    }
+
+    .stat {
+      text-align: center;
+      padding: 32px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .stat-number {
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    /* ===== Specs Grid ===== */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .spec-card {
+      padding: 28px 24px;
+      background: white;
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .spec-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    }
+
+    .spec-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      background: var(--accent-soft);
+    }
+
+    .spec-icon svg {
+      width: 22px;
+      height: 22px;
+      color: var(--accent);
+    }
+
+    .spec-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .spec-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ===== Voice Pills ===== */
+    .voice-strip {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .voice-pill {
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    }
+
+    .voice-pill:hover {
+      border-color: var(--accent-mid);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .voice-pill.female {
+      background: #fdf2f8;
+      border-color: #f9a8d4;
+      color: #be185d;
+    }
+
+    .voice-pill.male {
+      background: #eff6ff;
+      border-color: #93c5fd;
+      color: #1d4ed8;
+    }
+
+    .voice-pill.recommended {
+      background: var(--accent-soft);
+      border-color: var(--accent-mid);
+      color: var(--accent-dark);
+    }
+
+    /* ===== CTA ===== */
+    .cta-section {
+      padding: 120px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #3730a3 100%);
+      color: #ffffff;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      bottom: -300px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(167, 139, 250, 0.2) 0%, rgba(124, 58, 237, 0.1) 40%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-section h2 {
+      font-size: clamp(28px, 4vw, 52px);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+      color: #ffffff;
+    }
+
+    .cta-section p {
+      font-size: 17px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 40px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-section .hero-buttons { position: relative; z-index: 1; }
+
+    .cta-section .btn-primary {
+      background: #ffffff;
+      color: var(--accent-dark);
+    }
+
+    .cta-section .btn-primary:hover {
+      box-shadow: 0 8px 32px rgba(255, 255, 255, 0.2);
+    }
+
+    .cta-section .btn-ghost {
+      color: rgba(255, 255, 255, 0.7);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .cta-section .btn-ghost:hover {
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .cta-section .hero-meta {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      background: var(--bg);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-logo {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text-dim);
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    /* ===== Reveal ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-d1 { transition-delay: 0.1s; }
+    .reveal-d2 { transition-delay: 0.2s; }
+    .reveal-d3 { transition-delay: 0.3s; }
+    .reveal-d4 { transition-delay: 0.35s; }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1024px) {
+      .hero .container {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .hero-content { text-align: center; }
+      .hero-content h1 { margin-left: auto; margin-right: auto; }
+      .hero-content .hero-sub { margin-left: auto; margin-right: auto; }
+      .hero-content .hero-buttons { justify-content: center; }
+      .feature-grid { grid-template-columns: repeat(2, 1fr); }
+      .specs-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .showcase { grid-template-columns: 1fr; gap: 32px; }
+      .showcase.reversed { direction: ltr; }
+      .arch-diagram { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .mobile-toggle { display: block; }
+
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.97);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        padding: 20px 24px;
+        gap: 14px;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+      }
+
+      .hero { padding: 120px 0 60px; }
+      .section { padding: 80px 0; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .specs-grid { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .carousel-track { gap: 28px; animation-duration: 30s; }
+      .carousel-icon { width: 48px; height: 48px; border-radius: 12px; }
+      .carousel-icon svg { width: 24px; height: 24px; }
+      .carousel-wrapper::before, .carousel-wrapper::after { width: 60px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-buttons { flex-direction: column; }
+      .hero-buttons .btn-primary,
+      .hero-buttons .btn-ghost { width: 100%; justify-content: center; }
+      .stats-row { grid-template-columns: 1fr; }
+    }
+  </style>
+  <style>
+    /* Theme Toggle */
+    .theme-toggle-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      background: var(--bg-subtle, #f8fafc);
+      border-radius: 999px;
+      border: 1px solid var(--border, #e5e7eb);
+    }
+
+    .theme-toggle-float {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 1000;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .theme-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--text-dim, #64748b);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .theme-btn:hover {
+      color: var(--text, #0f172a);
+    }
+
+    .theme-btn.active {
+      background: var(--accent, #2563eb);
+      color: #ffffff;
+    }
+
+    [data-theme="dark"] .theme-toggle-group {
+      background: var(--bg-subtle, #1e293b);
+      border-color: var(--border, #334155);
+    }
+
+    [data-theme="dark"] .theme-btn.active {
+      color: var(--bg, #0f172a);
+    }
+
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0f172a;
+      --bg-subtle: #1e293b;
+      --bg-card: #1e293b;
+      --bg-card-hover: #334155;
+      --border: #334155;
+      --border-hover: #475569;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --surface-light: #1e293b;
+      --surface-warm: #1e293b;
+      --surface-border: #334155;
+      --text-dark: #f1f5f9;
+      --text-dark-muted: #94a3b8;
+      --accent: var(--accent-mid);
+      --accent-dark: var(--accent-mid);
+    }
+
+    /* Dark Theme Base */
+    [data-theme="dark"] body {
+      background: var(--bg, #0f172a);
+      color: var(--text, #f1f5f9);
+    }
+
+    [data-theme="dark"] a {
+      color: var(--accent, #7aa2f7);
+    }
+
+    [data-theme="dark"] nav.scrolled {
+      background: rgba(15, 23, 42, 0.85);
+      border-bottom-color: var(--border, #334155);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    }
+
+    [data-theme="dark"] header,
+    [data-theme="dark"] .site-header,
+    [data-theme="dark"] .header,
+    [data-theme="dark"] .site-header *,
+    [data-theme="dark"] .header * {
+      color: var(--text, #f1f5f9);
+    }
+
+    [data-theme="dark"] .tab {
+      background-color: #1c232d;
+      border-color: #2b3340;
+    }
+
+    [data-theme="dark"] .tab button:hover {
+      background-color: #2a3341;
+    }
+
+    [data-theme="dark"] .tab button.active {
+      background-color: #323d4f;
+    }
+
+    [data-theme="dark"] .tabcontent {
+      border-color: #2b3340;
+    }
+
+    [data-theme="dark"] .audio-label {
+      color: var(--text-muted, #94a3b8);
+    }
+
+    [data-theme="dark"] audio {
+      background-color: #1f2937;
+      border-color: #334155;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    [data-theme="dark"] audio::-webkit-media-controls-panel {
+      background-color: #1f2937;
+      color: #e2e8f0;
+    }
+
+    [data-theme="dark"] audio::-webkit-media-controls-play-button,
+    [data-theme="dark"] audio::-webkit-media-controls-volume-slider,
+    [data-theme="dark"] audio::-webkit-media-controls-seek-bar {
+      color: #93c5fd;
+    }
+  </style>
+
+
+  <style>
+/* Modern Footer */
+.modern-footer {
+  background: var(--footer-bg, #f7f2ec);
+  border-top: 1px solid var(--footer-border, #e5ded5);
+  padding: 48px 0 24px;
+}
+
+.modern-footer .footer-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.modern-footer .footer-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 2.2fr) repeat(3, minmax(140px, 1fr));
+  gap: 32px;
+}
+
+.modern-footer .footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modern-footer .footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.modern-footer .footer-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #9bd0c6, #a5b9f6);
+  color: #1f2937;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.modern-footer .footer-desc {
+  color: var(--text-muted, #6b6b6b);
+  line-height: 1.6;
+  max-width: 320px;
+}
+
+.modern-footer .footer-email {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid var(--footer-border, #e5ded5);
+  background: var(--footer-pill, #ffffff);
+  color: var(--text, #2b2b2b);
+  text-decoration: none;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, color .2s ease;
+}
+
+.modern-footer .footer-email svg {
+  width: 26px;
+  height: 26px;
+  stroke: currentColor;
+}
+
+.modern-footer .footer-email:hover {
+  color: var(--accent, #2563eb);
+  border-color: var(--accent, #2563eb);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+}
+
+.modern-footer .footer-col h4 {
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted, #7b7b7b);
+  margin-bottom: 12px;
+}
+
+.modern-footer .footer-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modern-footer .footer-links a {
+  color: var(--text, #2b2b2b);
+  text-decoration: none;
+}
+
+.modern-footer .footer-links a:hover {
+  color: var(--accent, #2563eb);
+}
+
+.modern-footer .footer-bottom {
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid var(--footer-border, #e5ded5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  color: var(--text-muted, #6b6b6b);
+  font-size: 0.9rem;
+}
+
+.modern-footer .footer-bottom a {
+  color: var(--accent, #2563eb);
+  text-decoration: none;
+}
+
+.modern-footer .footer-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.modern-footer .footer-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--footer-border, #e5ded5);
+  background: var(--footer-pill, #ffffff);
+  font-size: 0.78rem;
+  color: var(--text-muted, #6b6b6b);
+}
+
+[data-theme="dark"] .modern-footer {
+  background: #0b1220;
+  border-color: #1f2a3a;
+}
+
+[data-theme="dark"] .modern-footer .footer-mark {
+  color: #0f172a;
+}
+
+[data-theme="dark"] .modern-footer .footer-email,
+[data-theme="dark"] .modern-footer .footer-links a {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .modern-footer .footer-email {
+  background: #0f172a;
+  border-color: #1f2a3a;
+}
+
+[data-theme="dark"] .modern-footer .footer-email:hover {
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+[data-theme="dark"] .modern-footer .footer-desc,
+[data-theme="dark"] .modern-footer .footer-bottom,
+[data-theme="dark"] .modern-footer .footer-col h4 {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .modern-footer .footer-badge {
+  background: #0f172a;
+  border-color: #1f2a3a;
+  color: #94a3b8;
+}
+
+@media (max-width: 900px) {
+  .modern-footer .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .modern-footer .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modern-footer .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="theme-toggle-group theme-toggle-float">
+    <button class="theme-btn" data-theme-value="light" aria-label="Light mode">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/>
+      <line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/>
+      <line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+    </button>
+    <button class="theme-btn" data-theme-value="dark" aria-label="Dark mode">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+    </button>
+  </div>
+
+
+  <!-- Nav -->
+  <nav id="nav">
+    <div class="container">
+      <a href="#" class="nav-logo">
+        <div class="nav-logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        </div>
+        Mayari
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#quotes">Quotes</a></li>
+        <li><a href="#tts">TTS</a></li>
+        <li><a href="#export">Export</a></li>
+        <li><a href="#specs">Specs</a></li>
+        <li>
+          <a href="https://github.com/BoltzmannEntropy/Mayari" target="_blank" style="display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="color: #f0c14b;">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            <span id="mayari-stars">--</span>
+          </a>
+        </li>
+        <li>
+          <a href="#download" class="nav-cta">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download for macOS
+          </a>
+        </li>
+      </ul>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge reveal">
+          <a href="license.html" class="chip">Open Source</a>
+          macOS &middot; Flutter Desktop &middot; Kokoro TTS
+        </div>
+        <h1 class="reveal reveal-d1">
+          Read and <span class="grad">listen</span> to<br>your PDFs
+        </h1>
+        <p class="hero-sub reveal reveal-d2">
+          A moonlit companion for academic research. Extract quotes from PDF books with automatic citation tracking, listen with high-quality text-to-speech, and export everything to beautifully formatted Markdown.
+        </p>
+        <div class="hero-buttons reveal reveal-d3">
+          <a href="#download" class="btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download for macOS
+          </a>
+          <a href="#features" class="btn-ghost">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            Explore Features
+          </a>
+        </div>
+        <p class="hero-meta reveal reveal-d4">
+          <span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M20 15h2"/><path d="M9 2v2"/><path d="M9 20v2"/><path d="M2 9h2"/><path d="M20 9h2"/></svg>
+            macOS
+          </span>
+          <span class="sep">&middot;</span>
+          <span>Named after the Philippine moon goddess</span>
+        </p>
+      </div>
+
+      <!-- App Screenshot -->
+      <div class="hero-illustration reveal reveal-d4">
+        <img src="images/mayari-reader-2026-02-20-web.png" alt="Mayari Reader UI Screenshot" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.1);">
+      </div>
+    </div>
+  </section>
+
+  <!-- Tech Carousel -->
+  <section class="tech-carousel">
+    <div class="container">
+      <p class="reveal">Built with Modern Desktop Technologies</p>
+    </div>
+    <div class="carousel-wrapper reveal reveal-d1">
+      <div class="carousel-track">
+        <!-- Set 1 -->
+        <div class="carousel-item">
+          <div class="carousel-icon teal-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          </div>
+          <span class="carousel-name">Flutter</span>
+        </div>
+        <div class="carousel-item">
+          <div class="carousel-icon accent-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <span class="carousel-name">Syncfusion PDF</span>
+        </div>
+        <div class="carousel-item">
+          <div class="carousel-icon purple-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <span class="carousel-name">Riverpod</span>
+        </div>
+        <div class="carousel-item">
+          <div class="carousel-icon rose-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          </div>
+          <span class="carousel-name">Kokoro TTS</span>
+        </div>
+        <div class="carousel-item">
+          <div class="carousel-icon warm-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <span class="carousel-name">FastAPI</span>
+        </div>
+        <div class="carousel-item">
+          <div class="carousel-icon sky-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+          </div>
+          <span class="carousel-name">just_audio</span>
+        </div>
+        <div class="carousel-item">
+          <div class="carousel-icon green-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <span class="carousel-name">Markdown</span>
+        </div>
+        <div class="carousel-item">
+          <div class="carousel-icon indigo-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </div>
+          <span class="carousel-name">APA Citations</span>
+        </div>
+        <!-- Set 2 (duplicate) -->
+        <div class="carousel-item">
+          <div class="carousel-icon teal-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          </div>
+          <span class="carousel-name">Flutter</span>
+        </div>
+        <div class="carousel-item">
+          <div class="carousel-icon accent-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <span class="carousel-name">Syncfusion PDF</span>
+        </div>
+        <div class="carousel-item">
+          <div class="carousel-icon purple-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <span class="carousel-name">Riverpod</span>
+        </div>
+        <div class="carousel-item">
+          <div class="carousel-icon rose-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          </div>
+          <span class="carousel-name">Kokoro TTS</span>
+        </div>
+        <div class="carousel-item">
+          <div class="carousel-icon warm-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <span class="carousel-name">FastAPI</span>
+        </div>
+        <div class="carousel-item">
+          <div class="carousel-icon sky-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+          </div>
+          <span class="carousel-name">just_audio</span>
+        </div>
+        <div class="carousel-item">
+          <div class="carousel-icon green-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <span class="carousel-name">Markdown</span>
+        </div>
+        <div class="carousel-item">
+          <div class="carousel-icon indigo-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </div>
+          <span class="carousel-name">APA Citations</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Features -->
+  <section class="section section-dark" id="features">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-label label-gradient">Core Features</div>
+        <h2>Everything you need for research quote management</h2>
+        <p>A complete toolkit for extracting, organizing, and citing quotes from your PDF research materials. Read, listen, and export with ease.</p>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card reveal">
+          <span class="feature-emoji">&#128221;</span>
+          <h3>Quote Extraction</h3>
+          <p class="feature-desc">Select text and capture quotes instantly. Automatic page number tracking keeps your citations accurate.</p>
+          <div class="feature-tags">
+            <span class="feature-tag highlight">Cmd+D</span>
+            <span class="feature-tag">Page Numbers</span>
+            <span class="feature-tag">Highlight Mode</span>
+          </div>
+        </div>
+        <div class="feature-card reveal reveal-d1">
+          <span class="feature-emoji">&#127911;</span>
+          <h3>Text-to-Speech</h3>
+          <p class="feature-desc">Listen to your PDFs with Kokoro TTS. High-quality British voices with adjustable speed controls.</p>
+          <div class="feature-tags">
+            <span class="feature-tag highlight">8 Voices</span>
+            <span class="feature-tag">Speed Control</span>
+            <span class="feature-tag">Kokoro</span>
+          </div>
+        </div>
+        <div class="feature-card reveal reveal-d2">
+          <span class="feature-emoji">&#128218;</span>
+          <h3>Citation Tracking</h3>
+          <p class="feature-desc">Enter bibliographic metadata once. Every quote automatically gets proper APA-style citations.</p>
+          <div class="feature-tags">
+            <span class="feature-tag highlight">APA Format</span>
+            <span class="feature-tag">Author/Year</span>
+            <span class="feature-tag">Publisher</span>
+          </div>
+        </div>
+        <div class="feature-card reveal reveal-d3">
+          <span class="feature-emoji">&#128196;</span>
+          <h3>Markdown Export</h3>
+          <p class="feature-desc">Export all quotes to beautifully formatted Markdown. Ready for your papers, notes, or Obsidian.</p>
+          <div class="feature-tags">
+            <span class="feature-tag highlight">One Click</span>
+            <span class="feature-tag">Formatted</span>
+            <span class="feature-tag">Citations</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat reveal">
+          <div class="stat-number">8</div>
+          <div class="stat-label">TTS Voices</div>
+        </div>
+        <div class="stat reveal reveal-d1">
+          <div class="stat-number">1</div>
+          <div class="stat-label">Platform (macOS)</div>
+        </div>
+        <div class="stat reveal reveal-d2">
+          <div class="stat-number">2x</div>
+          <div class="stat-label">Speed Range</div>
+        </div>
+        <div class="stat reveal reveal-d3">
+          <div class="stat-number">1</div>
+          <div class="stat-label">Click Export</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quote Extraction Showcase -->
+  <section class="section section-light" id="quotes">
+    <div class="container">
+      <div class="showcase reveal">
+        <div class="showcase-text">
+          <div class="section-label label-gradient">Quote Extraction</div>
+          <h3>Capture quotes in seconds</h3>
+          <p>Select any text in your PDF and press Cmd+D to capture it instantly. Mayari automatically records the page number and associates it with the source. Enable Highlight Mode to capture every selection automatically.</p>
+          <ul class="showcase-bullets">
+            <li>
+              <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Select text and press Cmd+D to capture
+            </li>
+            <li>
+              <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Toggle Highlight Mode for continuous capture
+            </li>
+            <li>
+              <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Page numbers tracked automatically
+            </li>
+            <li>
+              <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Quotes organized by source in the sidebar
+            </li>
+          </ul>
+        </div>
+        <div class="showcase-visual">
+          <div class="code-block">
+<span class="comment">// Quote data structure</span>
+{
+  <span class="string">"text"</span>: <span class="string">"The only true wisdom is knowing you know nothing."</span>,
+  <span class="string">"page"</span>: <span class="number">42</span>,
+  <span class="string">"source"</span>: {
+    <span class="string">"title"</span>: <span class="string">"Apology"</span>,
+    <span class="string">"author"</span>: <span class="string">"Plato"</span>,
+    <span class="string">"year"</span>: <span class="number">399</span>
+  }
+}
+
+<span class="comment">// Keyboard shortcuts</span>
+<span class="function">Cmd+D</span>    <span class="comment">→ Add quote</span>
+<span class="function">Cmd+H</span>    <span class="comment">→ Toggle highlight mode</span>
+<span class="function">Arrow</span>    <span class="comment">→ Navigate pages</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Text-to-Speech -->
+  <section class="section section-darker" id="tts">
+    <div class="container">
+      <div class="showcase reversed reveal">
+        <div class="showcase-text">
+          <div class="section-label label-gradient">Text-to-Speech</div>
+          <h3>Listen to your research</h3>
+          <p>Powered by Kokoro TTS, Mayari lets you listen to your PDFs with high-quality neural voices. Perfect for reviewing material while multitasking, or for accessibility. Choose from 8 British voices and adjust playback speed from 0.5x to 2x.</p>
+          <ul class="showcase-bullets">
+            <li>
+              <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              8 high-quality British voices (4 female, 4 male)
+            </li>
+            <li>
+              <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Adjustable speed: 0.5x to 2.0x
+            </li>
+            <li>
+              <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Play, pause, skip forward/backward controls
+            </li>
+            <li>
+              <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Open-source Kokoro model runs locally
+            </li>
+          </ul>
+        </div>
+        <div class="showcase-visual">
+          <div class="voice-strip" style="justify-content: flex-start; gap: 8px; flex-wrap: wrap;">
+            <span class="voice-pill female recommended">Emma (Best)</span>
+            <span class="voice-pill female">Isabella</span>
+            <span class="voice-pill female">Alice</span>
+            <span class="voice-pill female">Lily</span>
+            <span class="voice-pill male">George</span>
+            <span class="voice-pill male">Fable</span>
+            <span class="voice-pill male">Lewis</span>
+            <span class="voice-pill male">Daniel</span>
+          </div>
+          <div class="code-block" style="margin-top: 20px;">
+<span class="comment"># TTS Backend API</span>
+POST /tts/synthesize
+{
+  <span class="string">"text"</span>: <span class="string">"Your PDF content..."</span>,
+  <span class="string">"voice"</span>: <span class="string">"bf_emma"</span>,
+  <span class="string">"speed"</span>: <span class="number">1.0</span>
+}
+
+<span class="comment"># Returns audio stream</span>
+Content-Type: audio/wav
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Export -->
+  <section class="section section-warm" id="export">
+    <div class="container">
+      <div class="showcase reveal">
+        <div class="showcase-text">
+          <div class="section-label label-gradient">Markdown Export</div>
+          <h3>Export with proper citations</h3>
+          <p>When you're done collecting quotes, export everything to Markdown with one click. Each quote includes its page number and the full bibliographic citation. Ready for your thesis, research notes, or Obsidian vault.</p>
+          <ul class="showcase-bullets">
+            <li>
+              <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Quotes grouped by source
+            </li>
+            <li>
+              <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              APA-style citations included
+            </li>
+            <li>
+              <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Page numbers for every quote
+            </li>
+            <li>
+              <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Clean Markdown formatting
+            </li>
+          </ul>
+        </div>
+        <div class="showcase-visual">
+          <div class="code-block">
+<span class="comment"># Exported Markdown</span>
+
+<span class="function">## Apology</span>
+<span class="keyword">Plato (399 BCE). Apology. Athens Press.</span>
+
+> "The only true wisdom is knowing
+>  you know nothing." (p. <span class="number">42</span>)
+
+> "An unexamined life is not worth
+>  living." (p. <span class="number">38</span>)
+
+<span class="function">## Republic</span>
+<span class="keyword">Plato (380 BCE). Republic. Athens Press.</span>
+
+> "The measure of a man is what he
+>  does with power." (p. <span class="number">156</span>)
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PDF Viewer -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="showcase reversed reveal">
+        <div class="showcase-text">
+          <div class="section-label label-gradient">PDF Viewer</div>
+          <h3>A two-pane research workspace</h3>
+          <p>Mayari's interface splits your screen between PDF reading and quote organization. The PDF viewer on the left gives you full navigation and zoom controls. The quotes panel on the right keeps everything organized by source.</p>
+          <ul class="showcase-bullets">
+            <li>
+              <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              60/40 split with resizable divider
+            </li>
+            <li>
+              <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Zoom controls: fit-to-width, fit-to-page, percentage
+            </li>
+            <li>
+              <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Drag-and-drop PDF loading
+            </li>
+            <li>
+              <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Orange border indicates highlight mode active
+            </li>
+          </ul>
+        </div>
+        <div class="showcase-visual">
+          <div class="code-block">
+<span class="comment">// Two-pane layout</span>
+┌──────────────────┬─────────────┐
+│                  │             │
+│   <span class="function">PDF Viewer</span>     │   <span class="function">Quotes</span>    │
+│                  │             │
+│  ┌────────────┐  │  <span class="keyword">Source 1</span>   │
+│  │            │  │  > Quote 1  │
+│  │   Page     │  │  > Quote 2  │
+│  │  Content   │  │             │
+│  │            │  │  <span class="keyword">Source 2</span>   │
+│  └────────────┘  │  > Quote 3  │
+│                  │             │
+│  <span class="string">[◀] [42/200] [▶]</span> │  <span class="number">[Export]</span>   │
+└──────────────────┴─────────────┘
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Specs -->
+  <section class="section section-light" id="specs">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-label label-gradient">Technical Architecture</div>
+        <h2>Built for researchers, by researchers</h2>
+        <p>A modern desktop application built with Flutter for cross-platform support. Local-first design means your data stays on your machine.</p>
+      </div>
+      <div class="specs-grid">
+        <div class="spec-card reveal">
+          <div class="spec-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          </div>
+          <h3>Flutter for macOS</h3>
+          <p>Native performance on macOS with Cupertino-style UI. Follows Apple's Human Interface Guidelines.</p>
+        </div>
+        <div class="spec-card reveal reveal-d1">
+          <div class="spec-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <h3>Syncfusion PDF</h3>
+          <p>Professional PDF rendering with text selection, zoom, and navigation. Handles large documents smoothly.</p>
+        </div>
+        <div class="spec-card reveal reveal-d2">
+          <div class="spec-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          </div>
+          <h3>Kokoro TTS</h3>
+          <p>Open-source neural text-to-speech with ONNX runtime. High-quality British voices, ~350MB model.</p>
+        </div>
+        <div class="spec-card reveal">
+          <div class="spec-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <h3>Riverpod State</h3>
+          <p>Reactive state management for Flutter. Clean architecture with providers for quotes, sources, and settings.</p>
+        </div>
+        <div class="spec-card reveal reveal-d1">
+          <div class="spec-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h3>Local Storage</h3>
+          <p>All data saved to ~/Documents/mayari_data.json. No cloud, no accounts. Your research stays private.</p>
+        </div>
+        <div class="spec-card reveal reveal-d2">
+          <div class="spec-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <h3>FastAPI Backend</h3>
+          <p>Python backend for TTS synthesis. Runs locally on port 8787. Optional—app works without TTS too.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section section-dark cta-section" id="download">
+    <div class="container">
+      <h2 class="reveal">Start your moonlit research journey</h2>
+      <p class="reveal reveal-d1">Download Mayari and transform how you extract and organize quotes from your PDFs.</p>
+      <div class="hero-buttons reveal reveal-d2">
+        <a href="https://github.com/BoltzmannEntropy/Mayari/releases/download/v1.0.2/Mayari-1.0.2.dmg" class="btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download for macOS
+        </a>
+        <span style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">v1.0.2 &bull; macOS 15+</span>
+        <a href="https://github.com/BoltzmannEntropy/Mayari" class="btn-ghost" target="_blank">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+          </svg>
+          View on GitHub
+        </a>
+      </div>
+      <div class="hero-buttons reveal reveal-d2" style="margin-top: 12px;">
+        <a href="https://polar.sh/BoltzmannEntropy/products/mayari" class="btn-primary" target="_blank" rel="noopener">Buy License (Polar)</a>
+        <a href="https://lemonsqueezy.com" class="btn-ghost" target="_blank" rel="noopener">Buy License (LemonSqueezy)</a>
+      </div>
+      <p class="hero-meta reveal reveal-d3" style="margin-top: 12px;">
+        <span>7-day in-app trial, then buy on this website or from the app Pro tab.</span>
+      </p>
+      <p class="hero-meta reveal reveal-d3" style="margin-top: 16px;">
+        <span>macOS Only &middot; Flutter &middot; <a href="license.html">Open Source</a></span>
+      </p>
+      <p class="hero-meta reveal reveal-d3" style="margin-top: 8px;">
+        <span>The codebase is cross-platform, but we currently provide macOS binaries only. License: Source code is licensed under Business Source License 1.1 (BSL-1.1), and binary distributions are licensed under the Mayari Binary Distribution License. See LICENSE, BINARY-LICENSE.txt, and the <a href="license.html">website License page</a>.</span>
+      </p>
+      <div class="release-notices reveal reveal-d4" style="margin-top: 28px; max-width: 720px; margin-left: auto; margin-right: auto;">
+        <div class="alpha-notice" style="background: #fef3cd; border: 1px solid #ffc107; border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; text-align: left;">
+          <div style="display: flex; align-items: flex-start; gap: 12px;">
+            <span style="font-size: 24px; line-height: 1;">&#9888;</span>
+            <div>
+              <h4 style="margin: 0 0 6px; font-size: 16px; font-weight: 700; color: #856404;">Alpha Release</h4>
+              <p style="margin: 0; font-size: 14px; color: #856404; line-height: 1.5;">This is an early alpha version intended for testing and development. Features may be incomplete, unstable, or change significantly before the stable release. Please report any issues on GitHub.</p>
+            </div>
+          </div>
+        </div>
+        <div class="unsigned-notice" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.25); border-radius: 12px; padding: 16px 20px; text-align: left;">
+          <div style="display: flex; align-items: flex-start; gap: 12px;">
+            <span style="font-size: 24px; line-height: 1;">&#9998;</span>
+            <div>
+              <h4 style="margin: 0 0 6px; font-size: 16px; font-weight: 700; color: #f59e0b;">Unsigned Build</h4>
+              <p style="margin: 0; font-size: 14px; color: rgba(255,255,255,0.9); line-height: 1.5;">This macOS build is not signed by Apple. You may need to right-click the app and select "Open" the first time you run it, or go to System Settings &rarr; Privacy &amp; Security to allow it.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+    <footer class="modern-footer">
+    <div class="footer-wrap">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <span class="footer-mark">M</span>
+            <span class="footer-name">Mayari</span>
+          </div>
+          <p class="footer-desc">Local-first PDF research companion with highlights, quotes, and TTS.</p>
+          <a class="footer-email" href="mailto:solomon@qneura.ai" aria-label="Email solomon@qneura.ai">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h16v10H4z" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="m4 8 8 6 8-6" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </a>
+        </div>
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul class="footer-links">
+          <li><a href="index.html#features">Features</a></li>
+          <li><a href="index.html#tts">TTS</a></li>
+          <li><a href="index.html#specs">Specs</a></li>
+          <li><a href="index.html#download">Download</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul class="footer-links">
+          <li><a href="https://github.com/BoltzmannEntropy/Mayari" target="_blank" rel="noopener">GitHub</a></li>
+          <li><a href="mailto:solomon@qneura.ai">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul class="footer-links">
+          <li><a href="privacy.html">Privacy</a></li>
+          <li><a href="terms.html">Terms</a></li>
+          <li><a href="license.html">License</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>&copy; 2026 Mayari. All rights reserved.</div>
+        <div>Made with &hearts; for researchers everywhere. <a href="https://qneura.ai/apps.html" target="_blank" rel="noopener">QNeura.ai</a></div>
+        <div class="footer-badges">
+        <span class="footer-badge">macOS</span>
+        <span class="footer-badge">PDF</span>
+        <span class="footer-badge">Local-first</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    // Reveal on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    // Mobile menu
+    const toggle = document.getElementById('mobileToggle');
+    const links = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => links.classList.toggle('open'));
+    links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const t = document.querySelector(this.getAttribute('href'));
+        if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      });
+    });
+
+    // Fetch GitHub stars
+    fetch('https://api.github.com/repos/BoltzmannEntropy/Mayari')
+      .then(r => r.json())
+      .then(data => {
+        if (data.stargazers_count !== undefined) {
+          document.getElementById('mayari-stars').textContent = data.stargazers_count.toLocaleString();
+        }
+      })
+      .catch(() => {});
+  </script>
+  <script>
+    (function() {
+      const themeButtons = document.querySelectorAll('.theme-btn');
+      if (!themeButtons.length) {
+        return;
+      }
+      const storedTheme = localStorage.getItem('theme');
+      const existingTheme = document.documentElement.getAttribute('data-theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initialTheme = storedTheme || existingTheme || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', initialTheme);
+      themeButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.themeValue === initialTheme);
+      });
+      themeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const theme = btn.dataset.themeValue;
+          document.documentElement.setAttribute('data-theme', theme);
+          localStorage.setItem('theme', theme);
+          themeButtons.forEach(b => b.classList.toggle('active', b === btn));
+        });
+      });
+    })();
+  </script>
+
+  <script src="privacy-consent.js"></script>
+</body>
+</html>
