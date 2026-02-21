@@ -1002,6 +1002,69 @@
       .language-demo-grid { grid-template-columns: 1fr; }
     }
 
+    .long-books-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .long-book-card {
+      padding: 22px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .long-book-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .long-book-meta {
+      margin-top: 6px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .long-book-card audio {
+      width: 100%;
+      height: 40px;
+      border-radius: 100px;
+    }
+
+    .long-book-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .long-book-actions a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .long-book-actions a:hover {
+      border-color: var(--accent-mid);
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    @media (max-width: 900px) {
+      .long-books-grid { grid-template-columns: 1fr; }
+    }
+
     /* ===== Voice Pills ===== */
     .voice-strip {
       display: flex;
@@ -1597,6 +1660,7 @@
       </a>
       <ul class="nav-links" id="navLinks">
         <li><a href="#voices">Voices</a></li>
+        <li><a href="#long-books">Long Books</a></li>
         <li><a href="#features">Features</a></li>
         <li><a href="#tts">TTS</a></li>
         <li><a href="#specs">Specs</a></li>
@@ -1837,6 +1901,34 @@
           <audio controls preload="metadata">
             <source src="audio/sample-mandarin-xiaobei.mp3" type="audio/mpeg">
           </audio>
+        </div>
+      </div>
+
+      <div class="section-header reveal" id="long-books" style="margin-top: 56px;">
+        <div class="section-label label-gradient">Long Audiobooks</div>
+        <h3 style="font-size: clamp(24px, 3vw, 34px); margin-bottom: 12px;">History Book Demo (Long Form)</h3>
+        <p>Generated from the public-domain H. G. Wells history excerpt with British voices.</p>
+      </div>
+      <div class="long-books-grid">
+        <div class="long-book-card reveal">
+          <div class="long-book-title">A Short History (Emma)</div>
+          <div class="long-book-meta">Voice: <code>bf_emma</code> · Duration: 12m 56s</div>
+          <audio controls preload="metadata">
+            <source src="audio/long-history-emma.mp3" type="audio/mpeg">
+          </audio>
+          <div class="long-book-actions">
+            <a href="audio/long-history-emma.mp3" download>Download MP3</a>
+          </div>
+        </div>
+        <div class="long-book-card reveal reveal-d1">
+          <div class="long-book-title">A Short History (George)</div>
+          <div class="long-book-meta">Voice: <code>bm_george</code> · Duration: 14m 38s</div>
+          <audio controls preload="metadata">
+            <source src="audio/long-history-george.mp3" type="audio/mpeg">
+          </audio>
+          <div class="long-book-actions">
+            <a href="audio/long-history-george.mp3" download>Download MP3</a>
+          </div>
         </div>
       </div>
     </div>

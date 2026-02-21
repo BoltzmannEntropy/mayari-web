@@ -27,6 +27,8 @@ Website demo samples are in `audio/`:
 - `sample-japanese-nezumi.mp3`
 - `sample-portuguese-dora.mp3`
 - `sample-mandarin-xiaobei.mp3`
+- `long-history-emma.mp3`
+- `long-history-george.mp3`
 
 ## Latest App Screenshot
 
