@@ -817,6 +817,131 @@
       line-height: 1.6;
     }
 
+    /* ===== Hero Audio ===== */
+    .hero-audio {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .audio-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .hero-audio audio {
+      width: 100%;
+      max-width: 400px;
+      height: 48px;
+      border-radius: 100px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .hero-audio audio::-webkit-media-controls-panel {
+      background: var(--bg-card);
+      border-radius: 100px;
+    }
+
+    @media (max-width: 1024px) {
+      .hero-audio {
+        align-items: center;
+      }
+    }
+
+    /* ===== Voice Showcase ===== */
+    .voice-showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .voice-card {
+      padding: 24px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+      text-align: center;
+    }
+
+    .voice-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-hover);
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.06);
+    }
+
+    .voice-card.recommended {
+      border-color: var(--accent-mid);
+      background: var(--accent-soft);
+    }
+
+    .voice-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .voice-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .voice-gender {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .voice-gender.female { color: #be185d; }
+    .voice-gender.male { color: #1d4ed8; }
+
+    .voice-card audio {
+      width: 100%;
+      height: 40px;
+      border-radius: 100px;
+    }
+
+    .voice-desc {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+
+    .voice-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--accent);
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 1024px) {
+      .voice-showcase-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .voice-showcase-grid { grid-template-columns: 1fr; }
+    }
+
     /* ===== Voice Pills ===== */
     .voice-strip {
       display: flex;
@@ -1413,7 +1538,7 @@
       <ul class="nav-links" id="navLinks">
         <li><a href="#features">Features</a></li>
         <li><a href="#tts">TTS</a></li>
-        <li><a href="#export">Export</a></li>
+        <li><a href="#voices">Voices</a></li>
         <li><a href="#specs">Specs</a></li>
         <li>
           <a href="https://github.com/BoltzmannEntropy/Mayari" target="_blank" style="display: inline-flex; align-items: center; gap: 6px;">
@@ -1461,6 +1586,13 @@
         <p class="hero-sub reveal reveal-d2">
           A moonlit PDF reader for macOS. Read your PDFs and listen with high-quality text-to-speech powered by Kokoro TTS.
         </p>
+        <div class="hero-audio reveal reveal-d2">
+          <span class="audio-label">Sample Audio</span>
+          <audio controls preload="metadata">
+            <source src="audio/sample-emma.mp3" type="audio/mpeg">
+            Your browser does not support audio playback.
+          </audio>
+        </div>
         <div class="hero-buttons reveal reveal-d3">
           <a href="#download" class="btn-primary">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1608,6 +1740,100 @@ POST /tts/synthesize
 <span class="comment"># Returns audio stream</span>
 Content-Type: audio/wav
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Voice Showcase -->
+  <section class="section section-dark" id="voices">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-label label-gradient">Voice Samples</div>
+        <h2>8 British Voices</h2>
+        <p>Listen to all available voices. Each voice has its own character and tone, perfect for different types of content.</p>
+      </div>
+      <div class="voice-showcase-grid">
+        <div class="voice-card recommended reveal">
+          <span class="voice-badge">Best</span>
+          <div class="voice-name">Emma</div>
+          <div class="voice-meta">
+            <span class="voice-gender female">Female</span>
+          </div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-emma.mp3" type="audio/mpeg">
+          </audio>
+          <p class="voice-desc">Warm, clear articulation</p>
+        </div>
+        <div class="voice-card reveal reveal-d1">
+          <div class="voice-name">Isabella</div>
+          <div class="voice-meta">
+            <span class="voice-gender female">Female</span>
+          </div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-isabella.mp3" type="audio/mpeg">
+          </audio>
+          <p class="voice-desc">Expressive, gentle</p>
+        </div>
+        <div class="voice-card reveal reveal-d2">
+          <div class="voice-name">Alice</div>
+          <div class="voice-meta">
+            <span class="voice-gender female">Female</span>
+          </div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-alice.mp3" type="audio/mpeg">
+          </audio>
+          <p class="voice-desc">Bright, youthful</p>
+        </div>
+        <div class="voice-card reveal reveal-d3">
+          <div class="voice-name">Lily</div>
+          <div class="voice-meta">
+            <span class="voice-gender female">Female</span>
+          </div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-lily.mp3" type="audio/mpeg">
+          </audio>
+          <p class="voice-desc">Soft, calming</p>
+        </div>
+        <div class="voice-card reveal">
+          <div class="voice-name">George</div>
+          <div class="voice-meta">
+            <span class="voice-gender male">Male</span>
+          </div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-george.mp3" type="audio/mpeg">
+          </audio>
+          <p class="voice-desc">Authoritative, deep</p>
+        </div>
+        <div class="voice-card reveal reveal-d1">
+          <div class="voice-name">Fable</div>
+          <div class="voice-meta">
+            <span class="voice-gender male">Male</span>
+          </div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-fable.mp3" type="audio/mpeg">
+          </audio>
+          <p class="voice-desc">Storyteller, engaging</p>
+        </div>
+        <div class="voice-card reveal reveal-d2">
+          <div class="voice-name">Lewis</div>
+          <div class="voice-meta">
+            <span class="voice-gender male">Male</span>
+          </div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-lewis.mp3" type="audio/mpeg">
+          </audio>
+          <p class="voice-desc">Professional, neutral</p>
+        </div>
+        <div class="voice-card reveal reveal-d3">
+          <div class="voice-name">Daniel</div>
+          <div class="voice-meta">
+            <span class="voice-gender male">Male</span>
+          </div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-daniel.mp3" type="audio/mpeg">
+          </audio>
+          <p class="voice-desc">Friendly, conversational</p>
         </div>
       </div>
     </div>
