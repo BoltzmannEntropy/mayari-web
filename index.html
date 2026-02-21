@@ -1536,9 +1536,9 @@
         Mayari
       </a>
       <ul class="nav-links" id="navLinks">
+        <li><a href="#voices">Voices</a></li>
         <li><a href="#features">Features</a></li>
         <li><a href="#tts">TTS</a></li>
-        <li><a href="#voices">Voices</a></li>
         <li><a href="#specs">Specs</a></li>
         <li>
           <a href="https://github.com/BoltzmannEntropy/Mayari" target="_blank" style="display: inline-flex; align-items: center; gap: 6px;">
@@ -1623,6 +1623,100 @@
       <!-- App Screenshot -->
       <div class="hero-illustration reveal reveal-d4">
         <img src="images/mayari-reader-2026-02-20-web.png" alt="Mayari Reader UI Screenshot" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.1);">
+      </div>
+    </div>
+  </section>
+
+  <!-- Voice Showcase -->
+  <section class="section section-dark" id="voices">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-label label-gradient">Voice Samples</div>
+        <h2>8 British Voices</h2>
+        <p>Listen to all available voices. Each voice has its own character and tone, perfect for different types of content.</p>
+      </div>
+      <div class="voice-showcase-grid">
+        <div class="voice-card recommended reveal">
+          <span class="voice-badge">Best</span>
+          <div class="voice-name">Emma</div>
+          <div class="voice-meta">
+            <span class="voice-gender female">Female</span>
+          </div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-emma.mp3" type="audio/mpeg">
+          </audio>
+          <p class="voice-desc">Warm, clear articulation</p>
+        </div>
+        <div class="voice-card reveal reveal-d1">
+          <div class="voice-name">Isabella</div>
+          <div class="voice-meta">
+            <span class="voice-gender female">Female</span>
+          </div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-isabella.mp3" type="audio/mpeg">
+          </audio>
+          <p class="voice-desc">Expressive, gentle</p>
+        </div>
+        <div class="voice-card reveal reveal-d2">
+          <div class="voice-name">Alice</div>
+          <div class="voice-meta">
+            <span class="voice-gender female">Female</span>
+          </div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-alice.mp3" type="audio/mpeg">
+          </audio>
+          <p class="voice-desc">Bright, youthful</p>
+        </div>
+        <div class="voice-card reveal reveal-d3">
+          <div class="voice-name">Lily</div>
+          <div class="voice-meta">
+            <span class="voice-gender female">Female</span>
+          </div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-lily.mp3" type="audio/mpeg">
+          </audio>
+          <p class="voice-desc">Soft, calming</p>
+        </div>
+        <div class="voice-card reveal">
+          <div class="voice-name">George</div>
+          <div class="voice-meta">
+            <span class="voice-gender male">Male</span>
+          </div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-george.mp3" type="audio/mpeg">
+          </audio>
+          <p class="voice-desc">Authoritative, deep</p>
+        </div>
+        <div class="voice-card reveal reveal-d1">
+          <div class="voice-name">Fable</div>
+          <div class="voice-meta">
+            <span class="voice-gender male">Male</span>
+          </div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-fable.mp3" type="audio/mpeg">
+          </audio>
+          <p class="voice-desc">Storyteller, engaging</p>
+        </div>
+        <div class="voice-card reveal reveal-d2">
+          <div class="voice-name">Lewis</div>
+          <div class="voice-meta">
+            <span class="voice-gender male">Male</span>
+          </div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-lewis.mp3" type="audio/mpeg">
+          </audio>
+          <p class="voice-desc">Professional, neutral</p>
+        </div>
+        <div class="voice-card reveal reveal-d3">
+          <div class="voice-name">Daniel</div>
+          <div class="voice-meta">
+            <span class="voice-gender male">Male</span>
+          </div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-daniel.mp3" type="audio/mpeg">
+          </audio>
+          <p class="voice-desc">Friendly, conversational</p>
+        </div>
       </div>
     </div>
   </section>
@@ -1740,100 +1834,6 @@ POST /tts/synthesize
 <span class="comment"># Returns audio stream</span>
 Content-Type: audio/wav
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Voice Showcase -->
-  <section class="section section-dark" id="voices">
-    <div class="container">
-      <div class="section-header reveal">
-        <div class="section-label label-gradient">Voice Samples</div>
-        <h2>8 British Voices</h2>
-        <p>Listen to all available voices. Each voice has its own character and tone, perfect for different types of content.</p>
-      </div>
-      <div class="voice-showcase-grid">
-        <div class="voice-card recommended reveal">
-          <span class="voice-badge">Best</span>
-          <div class="voice-name">Emma</div>
-          <div class="voice-meta">
-            <span class="voice-gender female">Female</span>
-          </div>
-          <audio controls preload="metadata">
-            <source src="audio/sample-emma.mp3" type="audio/mpeg">
-          </audio>
-          <p class="voice-desc">Warm, clear articulation</p>
-        </div>
-        <div class="voice-card reveal reveal-d1">
-          <div class="voice-name">Isabella</div>
-          <div class="voice-meta">
-            <span class="voice-gender female">Female</span>
-          </div>
-          <audio controls preload="metadata">
-            <source src="audio/sample-isabella.mp3" type="audio/mpeg">
-          </audio>
-          <p class="voice-desc">Expressive, gentle</p>
-        </div>
-        <div class="voice-card reveal reveal-d2">
-          <div class="voice-name">Alice</div>
-          <div class="voice-meta">
-            <span class="voice-gender female">Female</span>
-          </div>
-          <audio controls preload="metadata">
-            <source src="audio/sample-alice.mp3" type="audio/mpeg">
-          </audio>
-          <p class="voice-desc">Bright, youthful</p>
-        </div>
-        <div class="voice-card reveal reveal-d3">
-          <div class="voice-name">Lily</div>
-          <div class="voice-meta">
-            <span class="voice-gender female">Female</span>
-          </div>
-          <audio controls preload="metadata">
-            <source src="audio/sample-lily.mp3" type="audio/mpeg">
-          </audio>
-          <p class="voice-desc">Soft, calming</p>
-        </div>
-        <div class="voice-card reveal">
-          <div class="voice-name">George</div>
-          <div class="voice-meta">
-            <span class="voice-gender male">Male</span>
-          </div>
-          <audio controls preload="metadata">
-            <source src="audio/sample-george.mp3" type="audio/mpeg">
-          </audio>
-          <p class="voice-desc">Authoritative, deep</p>
-        </div>
-        <div class="voice-card reveal reveal-d1">
-          <div class="voice-name">Fable</div>
-          <div class="voice-meta">
-            <span class="voice-gender male">Male</span>
-          </div>
-          <audio controls preload="metadata">
-            <source src="audio/sample-fable.mp3" type="audio/mpeg">
-          </audio>
-          <p class="voice-desc">Storyteller, engaging</p>
-        </div>
-        <div class="voice-card reveal reveal-d2">
-          <div class="voice-name">Lewis</div>
-          <div class="voice-meta">
-            <span class="voice-gender male">Male</span>
-          </div>
-          <audio controls preload="metadata">
-            <source src="audio/sample-lewis.mp3" type="audio/mpeg">
-          </audio>
-          <p class="voice-desc">Professional, neutral</p>
-        </div>
-        <div class="voice-card reveal reveal-d3">
-          <div class="voice-name">Daniel</div>
-          <div class="voice-meta">
-            <span class="voice-gender male">Male</span>
-          </div>
-          <audio controls preload="metadata">
-            <source src="audio/sample-daniel.mp3" type="audio/mpeg">
-          </audio>
-          <p class="voice-desc">Friendly, conversational</p>
         </div>
       </div>
     </div>
