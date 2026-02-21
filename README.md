@@ -6,7 +6,27 @@ The codebase is cross-platform, but we currently provide macOS binaries only.
 
 ## Latest Download
 
-- DMG: https://github.com/BoltzmannEntropy/Mayari/releases/download/v1.0.2/Mayari-1.0.2.dmg
+- DMG: https://github.com/BoltzmannEntropy/Mayari/releases/download/v1.0.5/Mayari-1.0.5.dmg
+
+## Audio Samples
+
+Website demo samples are in `audio/`:
+
+- `sample-emma.mp3`
+- `sample-isabella.mp3`
+- `sample-alice.mp3`
+- `sample-lily.mp3`
+- `sample-george.mp3`
+- `sample-fable.mp3`
+- `sample-lewis.mp3`
+- `sample-daniel.mp3`
+- `sample-spanish-dora.mp3`
+- `sample-french-siwis.mp3`
+- `sample-hindi-alpha.mp3`
+- `sample-italian-sara.mp3`
+- `sample-japanese-nezumi.mp3`
+- `sample-portuguese-dora.mp3`
+- `sample-mandarin-xiaobei.mp3`
 
 ## Latest App Screenshot
 
