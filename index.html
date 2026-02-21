@@ -363,8 +363,14 @@
     .hero-demo-video {
       display: block;
       width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+      border-radius: 0;
+      box-shadow: none;
+      background: #000;
+    }
+
+    .hero-illustration.hero-video {
+      padding: 0;
+      overflow: hidden;
       background: #000;
     }
 
@@ -1629,8 +1635,8 @@
       </div>
 
       <!-- App Screenshot -->
-      <div class="hero-illustration reveal reveal-d4">
-        <video class="hero-demo-video" controls autoplay muted loop playsinline preload="metadata">
+      <div class="hero-illustration hero-video reveal reveal-d4">
+        <video class="hero-demo-video" controls playsinline preload="metadata">
           <source src="images/mayari-video.mp4" type="video/mp4">
           <source src="images/mayari-video.mov" type="video/quicktime">
           Your browser does not support the demo video.
