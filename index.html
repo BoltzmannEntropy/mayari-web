@@ -960,6 +960,48 @@
       .voice-showcase-grid { grid-template-columns: 1fr; }
     }
 
+    .language-demo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .language-card {
+      padding: 18px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .language-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .language-meta {
+      margin-top: 4px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: var(--text-dim);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .language-card audio {
+      width: 100%;
+      height: 38px;
+      border-radius: 100px;
+    }
+
+    @media (max-width: 1024px) {
+      .language-demo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 680px) {
+      .language-demo-grid { grid-template-columns: 1fr; }
+    }
+
     /* ===== Voice Pills ===== */
     .voice-strip {
       display: flex;
@@ -1654,8 +1696,8 @@
     <div class="container">
       <div class="section-header reveal">
         <div class="section-label label-gradient">Voice Samples</div>
-        <h2>8 British Voices</h2>
-        <p>Listen to all available voices. Each voice has its own character and tone, perfect for different types of content.</p>
+        <h2>British + Multilingual Voice Demos</h2>
+        <p>Mayari includes the full British set and multilingual Kokoro voice catalogs. Preview sample voices below.</p>
       </div>
       <div class="voice-showcase-grid">
         <div class="voice-card recommended reveal">
@@ -1740,6 +1782,63 @@
           <p class="voice-desc">Friendly, conversational</p>
         </div>
       </div>
+
+      <div class="section-header reveal" style="margin-top: 56px;">
+        <div class="section-label label-gradient">Languages</div>
+        <h3 style="font-size: clamp(24px, 3vw, 34px); margin-bottom: 12px;">Other Supported Languages</h3>
+        <p>Live demos generated with Kokoro voices for Spanish, French, Hindi, Italian, Japanese, Brazilian Portuguese, and Mandarin Chinese.</p>
+      </div>
+      <div class="language-demo-grid">
+        <div class="language-card reveal">
+          <div class="language-name">Spanish</div>
+          <div class="language-meta">ef_dora</div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-spanish-dora.mp3" type="audio/mpeg">
+          </audio>
+        </div>
+        <div class="language-card reveal reveal-d1">
+          <div class="language-name">French</div>
+          <div class="language-meta">ff_siwis</div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-french-siwis.mp3" type="audio/mpeg">
+          </audio>
+        </div>
+        <div class="language-card reveal reveal-d2">
+          <div class="language-name">Hindi</div>
+          <div class="language-meta">hf_alpha</div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-hindi-alpha.mp3" type="audio/mpeg">
+          </audio>
+        </div>
+        <div class="language-card reveal">
+          <div class="language-name">Italian</div>
+          <div class="language-meta">if_sara</div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-italian-sara.mp3" type="audio/mpeg">
+          </audio>
+        </div>
+        <div class="language-card reveal reveal-d1">
+          <div class="language-name">Japanese</div>
+          <div class="language-meta">jf_nezumi</div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-japanese-nezumi.mp3" type="audio/mpeg">
+          </audio>
+        </div>
+        <div class="language-card reveal reveal-d2">
+          <div class="language-name">Brazilian Portuguese</div>
+          <div class="language-meta">pf_dora</div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-portuguese-dora.mp3" type="audio/mpeg">
+          </audio>
+        </div>
+        <div class="language-card reveal">
+          <div class="language-name">Mandarin Chinese</div>
+          <div class="language-meta">zf_xiaobei</div>
+          <audio controls preload="metadata">
+            <source src="audio/sample-mandarin-xiaobei.mp3" type="audio/mpeg">
+          </audio>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1755,11 +1854,11 @@
         <div class="feature-card reveal">
           <span class="feature-emoji">&#127911;</span>
           <h3>Text-to-Speech</h3>
-          <p class="feature-desc">Listen to your PDFs with Kokoro TTS. High-quality British voices with adjustable speed controls.</p>
+          <p class="feature-desc">Listen to your PDFs with Kokoro TTS across multiple language voice catalogs, with adjustable speed controls.</p>
           <div class="feature-tags">
-            <span class="feature-tag highlight">8 Voices</span>
+            <span class="feature-tag highlight">50+ Voices</span>
+            <span class="feature-tag">9 Languages</span>
             <span class="feature-tag">Speed Control</span>
-            <span class="feature-tag">Kokoro</span>
           </div>
         </div>
         <div class="feature-card reveal reveal-d2">
@@ -1787,18 +1886,22 @@
       <!-- Stats -->
       <div class="stats-row">
         <div class="stat reveal">
-          <div class="stat-number">8</div>
+          <div class="stat-number">50+</div>
           <div class="stat-label">TTS Voices</div>
         </div>
         <div class="stat reveal reveal-d1">
+          <div class="stat-number">9</div>
+          <div class="stat-label">Languages</div>
+        </div>
+        <div class="stat reveal reveal-d2">
           <div class="stat-number">1</div>
           <div class="stat-label">Platform (macOS)</div>
         </div>
-        <div class="stat reveal reveal-d2">
+        <div class="stat reveal reveal-d3">
           <div class="stat-number">2x</div>
           <div class="stat-label">Speed Range</div>
         </div>
-        <div class="stat reveal reveal-d3">
+        <div class="stat reveal">
           <div class="stat-number">1</div>
           <div class="stat-label">Click Export</div>
         </div>
@@ -1813,11 +1916,11 @@
         <div class="showcase-text">
           <div class="section-label label-gradient">Text-to-Speech</div>
           <h3>Listen to your PDFs</h3>
-          <p>Powered by Kokoro TTS, Mayari lets you listen to your PDFs with high-quality neural voices. Perfect for reviewing material while multitasking, or for accessibility. Choose from 8 British voices and adjust playback speed from 0.5x to 2x.</p>
+          <p>Powered by Kokoro TTS, Mayari lets you listen to your PDFs with high-quality neural voices. Perfect for reviewing material while multitasking, or for accessibility. Use British English voices or select from other supported language catalogs.</p>
           <ul class="showcase-bullets">
             <li>
               <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-              8 high-quality British voices (4 female, 4 male)
+              50+ Kokoro voices across 9 language catalogs
             </li>
             <li>
               <span class="bullet-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span>
@@ -1939,7 +2042,7 @@ Content-Type: audio/wav
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
           </div>
           <h3>Kokoro TTS</h3>
-          <p>Open-source neural text-to-speech with ONNX runtime. High-quality British voices, ~350MB model.</p>
+          <p>Open-source neural text-to-speech with ONNX runtime. British + multilingual voice catalogs, ~350MB model.</p>
         </div>
         <div class="spec-card reveal">
           <div class="spec-icon">
