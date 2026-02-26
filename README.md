@@ -6,7 +6,7 @@ The codebase is cross-platform, but we currently provide macOS binaries only.
 
 ## Latest Download
 
-- DMG: https://github.com/BoltzmannEntropy/Mayari/releases/download/v1.0.5/Mayari-1.0.5.dmg
+- DMG: https://github.com/BoltzmannEntropy/Mayari/releases/download/v1.0.6/Mayari-1.0.6.dmg
 
 ## Audio Samples
 
