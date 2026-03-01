@@ -2237,6 +2237,13 @@ Content-Type: audio/wav
               <p style="margin: 0 0 8px; font-size: 14px; color: rgba(255,255,255,0.9); line-height: 1.5;">As of February 26, 2026, this DMG is not signed/notarized by Apple.</p>
               <ol style="margin: 0; padding-left: 20px; color: rgba(255,255,255,0.9); font-size: 14px; line-height: 1.5;">
                 <li>Drag Mayari to Applications.</li>
+                <li>Remove quarantine attribute in Terminal:
+                  <pre style="margin: 8px 0 0; padding: 10px 12px; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.25); border-radius: 8px; overflow-x: auto; color: rgba(255,255,255,0.95); font-size: 12px; line-height: 1.4;"><code># If installed to /Applications (system-wide):
+xattr -d com.apple.quarantine /Applications/Mayari.app
+
+# If installed to ~/Applications (user-only):
+xattr -d com.apple.quarantine ~/Applications/Mayari.app</code></pre>
+                </li>
                 <li>Right-click Mayari.app and choose <strong>Open</strong>.</li>
                 <li>If blocked, open <strong>System Settings &rarr; Privacy &amp; Security</strong>.</li>
                 <li>Click <strong>Open Anyway</strong> for Mayari, then relaunch.</li>
